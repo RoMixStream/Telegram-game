@@ -1,31 +1,59 @@
 body {
-    text-align: center;
-    background-color: #f0f0f0;
-    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('background.JPEG') no-repeat center center/cover;
+    margin: 0;
+    flex-direction: column;
 }
 
-#game-container {
-    margin-top: 50px;
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 #coin {
     width: 150px;
+    height: 150px;
     cursor: pointer;
-    transition: transform 0.1s;
+    transition: transform 0.05s;
 }
 
-#coin:active {
-    transform: scale(1.1);
+.progress-container {
+    display: flex;
+    align-items: center;
+    margin-top: 15px;
+    position: relative;
 }
 
-#progress-bar {
-    width: 80%;
+#lock-icon {
+    width: 25px;
+    height: 25px;
+    margin-right: 10px;
+}
+
+.progress-bar {
+    width: 150px;
     height: 20px;
-    margin: 20px 0;
+    border: 2px solid black;
+    background-color: lightgray;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
-.hidden {
-    display: none;
-    font-size: 24px;
-    color: green;
+#progress {
+    width: 0%;
+    height: 100%;
+    background-color: green;
+    transition: width 0.2s;
+}
+
+#counter {
+    font-size: 14px;
+    margin-left: 10px;
+    font-weight: bold;
 }
