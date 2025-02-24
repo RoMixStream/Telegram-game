@@ -96,3 +96,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     gameLoop();
 });
+function restartGame() {
+    birdY = 200;
+    velocity = 0;
+    isGameOver = false;
+    obstacles = [];
+    frameCount = 0;
+    score = 0;
+    loop();
+}
+
+// Добавляем обработчик клика для рестарта
+canvas.addEventListener("click", () => {
+    if (isGameOver) {
+        restartGame();
+    } else {
+        velocity = -8; // Прыжок
+    }
+});
