@@ -3,20 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tap Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Кликер монеты</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Установите свой фон */
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .coin {
+            width: 150px;
+            height: 150px;
+            background-image: url('coin.png'); /* Вставьте путь к монете */
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .coin:active {
+            transform: scale(1.1);
+        }
+
+        .progress-bar-container {
+            width: 300px;
+            height: 20px;
+            background: #ddd;
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: gold;
+            transition: width 0.2s;
+        }
+
+        .click-count {
+            margin-top: 10px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .unlocked-message {
+            display: none;
+            font-size: 24px;
+            color: gold;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1>Tap to Collect</h1>
-        <p id="counter">Taps: 0</p>
-        <progress id="progress-bar" value="0" max="100"></progress>
-        <img id="coin" src="coin.png" alt="Coin">
-        <p id="unlock-message" class="hidden">🎉 Coin Unlocked! 🎉</p>
+    <div class="game-container">
+        <div class="coin" id="coin"></div>
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <div class="click-count" id="click-count">Клики: 0 / 100</div>
+        <div class="unlocked-message" id="unlocked-message">Монета разблокирована!</div>
     </div>
 
-    <audio id="bg-music" src="background.mp3" loop></audio>
+    <script>
+        let clickCount = 0;
+        const maxClicks = 100;
+        const coin = document.getElementById("coin");
+        const progressBar = document.getElementById("progress-bar");
+        const clickCountText = document.getElementById("click-count");
+        const unlockedMessage = document.getElementById("unlocked-message");
 
-    <script src="script.js"></script>
+        coin.addEventListener("click", () => {
+            if (clickCount < maxClicks) {
+                clickCount++;
+                progressBar.style.width = (clickCount / maxClicks) * 100 + "%";
+                clickCountText.textContent = `Клики: ${clickCount} / 100`;
+
+                if (clickCount === maxClicks) {
+                    unlockedMessage.style.display = "block";
+                }
+            }
+        });
+    </script>
 </body>
 </html>
