@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Настройки холста
+    // Размеры холста
     canvas.width = 400;
     canvas.height = 500;
 
@@ -11,17 +11,28 @@ document.addEventListener("DOMContentLoaded", () => {
     let velocity = 0;
     let gravity = 0.5;
     let isGameOver = false;
-
+    
     let obstacles = [];
     let frameCount = 0;
     let score = 0;
 
-    // Обработка нажатий на клавишу
-    document.addEventListener("keydown", (event) => {
-        if (event.code === "Space") {
-            velocity = -8;
+    // Загрузка изображения птицы
+    const birdImg = new Image();
+    birdImg.src = "bird.png"; // Убедись, что файл `bird.png` есть в проекте!
+
+    // Обработка кликов и касаний
+    function jump() {
+        if (!isGameOver) {
+            velocity = -8; // Прыжок вверх
         }
+    }
+    
+    document.addEventListener("keydown", (event) => {
+        if (event.code === "Space") jump();
     });
+
+    document.addEventListener("mousedown", jump);
+    document.addEventListener("touchstart", jump);
 
     function update() {
         if (isGameOver) return;
@@ -30,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
         velocity += gravity;
         birdY += velocity;
 
-        // Проверка столкновений с краями экрана
+        // Проверка столкновений с краями
         if (birdY > canvas.height || birdY < 0) {
             isGameOver = true;
         }
@@ -41,47 +52,39 @@ document.addEventListener("DOMContentLoaded", () => {
             obstacles.push({ x: canvas.width, gapY: gapY });
         }
 
-        // Движение и удаление старых препятствий
-        obstacles = obstacles.map(obs => ({ ...obs, x: obs.x - 3 })).filter(obs => obs.x > -50);
-
-        // Проверка столкновений с препятствиями
-        for (let obs of obstacles) {
-            if (obs.x < 50 && obs.x > 0) {
-                if (birdY < obs.gapY || birdY > obs.gapY + 100) {
-                    isGameOver = true;
-                }
+        // Движение препятствий
+        obstacles.forEach((obs) => {
+            obs.x -= 2;
+            if (
+                (birdY < obs.gapY || birdY > obs.gapY + 120) &&
+                obs.x < 60 && obs.x > 30
+            ) {
+                isGameOver = true;
             }
-        }
+        });
+
+        obstacles = obstacles.filter(obs => obs.x > -50);
 
         frameCount++;
-        score++;
     }
 
     function draw() {
-        // Очистка экрана
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         // Отрисовка птицы
-        ctx.fillStyle = "red";
-        ctx.fillRect(50, birdY, 20, 20);
+        ctx.drawImage(birdImg, 50, birdY, 40, 40);
 
         // Отрисовка препятствий
         ctx.fillStyle = "green";
-        for (let obs of obstacles) {
+        obstacles.forEach((obs) => {
             ctx.fillRect(obs.x, 0, 50, obs.gapY);
-            ctx.fillRect(obs.x, obs.gapY + 100, 50, canvas.height - obs.gapY - 100);
-        }
+            ctx.fillRect(obs.x, obs.gapY + 120, 50, canvas.height - obs.gapY - 120);
+        });
 
-        // Отрисовка счета
-        ctx.fillStyle = "black";
-        ctx.font = "20px Arial";
-        ctx.fillText(`Score: ${score}`, 10, 20);
-
-        // Сообщение о проигрыше
         if (isGameOver) {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "red";
             ctx.font = "30px Arial";
-            ctx.fillText("Game Over!", canvas.width / 4, canvas.height / 2);
+            ctx.fillText("Game Over", canvas.width / 2 - 80, canvas.height / 2);
         }
     }
 
