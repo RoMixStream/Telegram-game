@@ -62,3 +62,7 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+document.addEventListener("contextmenu", function(event) {
+    event.preventDefault();
+});
