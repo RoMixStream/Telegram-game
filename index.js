@@ -1,27 +1,64 @@
-let taps = 0;
-const maxTaps = 100;
+let clickCount = 0;
 const coin = document.getElementById("coin");
+const progressBar = document.getElementById("progress");
 const counter = document.getElementById("counter");
-const progressBar = document.getElementById("progress-bar");
-const unlockMessage = document.getElementById("unlock-message");
-const bgMusic = document.getElementById("bg-music");
+const lockIcon = document.getElementById("lock-icon");
 
 coin.addEventListener("click", () => {
-    taps++;
-    counter.textContent = `Taps: ${taps}`;
-    progressBar.value = taps;
+    clickCount++;
+    
+    // Обновление прогресса
+    let progress = (clickCount / 100) * 100;
+    progressBar.style.width = `${progress}%`;
+    counter.textContent = `${clickCount} / 100`;
 
-    // Добавляем анимацию монеты
-    coin.style.transform = `scale(1.1)`;
-    setTimeout(() => coin.style.transform = `scale(1)`, 100);
+    // Анимация прыжка монеты
+    coin.style.transform = "scale(1.1)";
+    setTimeout(() => {
+        coin.style.transform = "scale(1)";
+    }, 100);
 
-    // Запускаем музыку при первом клике
-    if (taps === 1) {
-        bgMusic.play();
-    }
+    // Добавление блесток
+    createSparkle();
 
-    // Проверяем разблокировку
-    if (taps >= maxTaps) {
-        unlockMessage.classList.remove("hidden");
+    // Проверка достижения 100 кликов
+    if (clickCount >= 100) {
+        lockIcon.src = "unlocked.png"; // Открываем замок
     }
 });
+
+// Функция создания блесток
+function createSparkle() {
+    const sparkle = document.createElement("div");
+    sparkle.classList.add("sparkle");
+    document.body.appendChild(sparkle);
+    
+    // Устанавливаем случайное положение около монеты
+    const rect = coin.getBoundingClientRect();
+    sparkle.style.left = `${rect.left + Math.random() * rect.width}px`;
+    sparkle.style.top = `${rect.top + Math.random() * rect.height}px`;
+
+    setTimeout(() => {
+        sparkle.remove();
+    }, 800);
+}
+
+// CSS для блесток
+const style = document.createElement("style");
+style.textContent = `
+    .sparkle {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: gold;
+        border-radius: 50%;
+        opacity: 1;
+        animation: sparkleAnimation 0.8s ease-out;
+    }
+
+    @keyframes sparkleAnimation {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(2); opacity: 0; }
+    }
+`;
+document.head.appendChild(style);
