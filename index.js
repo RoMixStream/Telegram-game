@@ -66,3 +66,11 @@ document.head.appendChild(style);
 document.addEventListener("contextmenu", function(event) {
     event.preventDefault();
 });
+
+document.addEventListener("mousedown", function(event) {
+    event.preventDefault();
+});
+
+document.addEventListener("touchstart", function(event) {
+    event.preventDefault();
+});
