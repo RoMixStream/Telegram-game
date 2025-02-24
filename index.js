@@ -1,84 +1,70 @@
-let clickCount = 0;
-const coin = document.getElementById("coin");
-const progressBar = document.getElementById("progress");
-const counter = document.getElementById("counter");
-const lockIcon = document.getElementById("lock-icon");
+document.addEventListener("DOMContentLoaded", () => {
+    let clickCount = 0;
+    const maxClicks = 100;
+    const coin = document.getElementById("coin");
+    const progressBar = document.getElementById("progress-bar");
+    const counter = document.getElementById("counter");
+    const lock = document.getElementById("lock");
 
-coin.addEventListener("click", () => {
-    clickCount++;
-    
-    // Обновление прогресса
-    let progress = (clickCount / 100) * 100;
-    progressBar.style.width = `${progress}%`;
-    counter.textContent = `${clickCount} / 100`;
+    // Запрет контекстного меню (ПКМ)
+    document.addEventListener("contextmenu", (event) => {
+        event.preventDefault();
+    });
 
-    // Анимация прыжка монеты
-    coin.style.transform = "scale(1.1)";
-    setTimeout(() => {
-        coin.style.transform = "scale(1)";
-    }, 100);
+    // Запрет выделения текста и перетаскивания
+    document.addEventListener("selectstart", (event) => {
+        event.preventDefault();
+    });
 
-    // Добавление блесток
-    createSparkle();
+    document.addEventListener("dragstart", (event) => {
+        event.preventDefault();
+    });
 
-    // Проверка достижения 100 кликов
-    if (clickCount >= 100) {
-        lockIcon.src = "unlocked.png"; // Открываем замок
-    }
-});
+    // Запрет двойного тапа (увеличения экрана)
+    let lastTouchEnd = 0;
+    document.addEventListener("touchend", (event) => {
+        let now = new Date().getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
 
-// Функция создания блесток
-function createSparkle() {
-    const sparkle = document.createElement("div");
-    sparkle.classList.add("sparkle");
-    document.body.appendChild(sparkle);
-    
-    // Устанавливаем случайное положение около монеты
-    const rect = coin.getBoundingClientRect();
-    sparkle.style.left = `${rect.left + Math.random() * rect.width}px`;
-    sparkle.style.top = `${rect.top + Math.random() * rect.height}px`;
+    // Функция обработки кликов по монете
+    function handleClick() {
+        if (clickCount < maxClicks) {
+            clickCount++;
+            progressBar.style.width = (clickCount / maxClicks) * 100 + "%";
+            counter.textContent = `${clickCount} / ${maxClicks}`;
 
-    setTimeout(() => {
-        sparkle.remove();
-    }, 800);
-}
+            // Эффект дергания монеты
+            coin.style.transform = `scale(1.1)`;
+            setTimeout(() => coin.style.transform = `scale(1)`, 100);
 
-// CSS для блесток
-const style = document.createElement("style");
-style.textContent = `
-    .sparkle {
-        position: absolute;
-        width: 10px;
-        height: 10px;
-        background-color: gold;
-        border-radius: 50%;
-        opacity: 1;
-        animation: sparkleAnimation 0.8s ease-out;
+            // Добавление блесток
+            createSparkles();
+
+            // Проверка достижения цели
+            if (clickCount === maxClicks) {
+                lock.src = "unlocked.png"; // Меняем замок на открытый
+            }
+        }
     }
 
-    @keyframes sparkleAnimation {
-        0% { transform: scale(1); opacity: 1; }
-        100% { transform: scale(2); opacity: 0; }
+    // Функция создания блесток
+    function createSparkles() {
+        let sparkle = document.createElement("div");
+        sparkle.classList.add("sparkle");
+        document.body.appendChild(sparkle);
+
+        let x = coin.offsetLeft + Math.random() * coin.offsetWidth;
+        let y = coin.offsetTop + Math.random() * coin.offsetHeight;
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+
+        setTimeout(() => sparkle.remove(), 500);
     }
-`;
-document.head.appendChild(style);
 
-document.addEventListener("contextmenu", function(event) {
-    event.preventDefault();
-});
-
-document.addEventListener("mousedown", function(event) {
-    event.preventDefault();
-});
-
-document.addEventListener("touchstart", function(event) {
-    event.preventDefault();
-});
-
-document.addEventListener("selectstart", function(event) {
-    event.preventDefault();
-});
-
-document.addEventListener("dragstart", function(event) {
-    event.preventDefault();
+    // Обработчик клика по монете
+    coin.addEventListener("click", handleClick);
 });
