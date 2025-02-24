@@ -1,63 +1,95 @@
-import { useEffect, useState } from "react";
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
 
-export default function FlyingBirdGame() {
-  const [birdY, setBirdY] = useState(200);
-  const [obstacles, setObstacles] = useState([]);
-  const [velocity, setVelocity] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+    // Настройки холста
+    canvas.width = 400;
+    canvas.height = 500;
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === ' ') setVelocity(-8);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+    // Переменные игры
+    let birdY = 200;
+    let velocity = 0;
+    let gravity = 0.5;
+    let isGameOver = false;
 
-  useEffect(() => {
-    if (gameOver) return;
-    
-    const gravity = 0.5;
-    const interval = setInterval(() => {
-      setBirdY((y) => Math.min(y + velocity, 400));
-      setVelocity((v) => v + gravity);
-    }, 30);
+    let obstacles = [];
+    let frameCount = 0;
+    let score = 0;
 
-    return () => clearInterval(interval);
-  }, [velocity, gameOver]);
-
-  useEffect(() => {
-    if (gameOver) return;
-
-    const interval = setInterval(() => {
-      setObstacles((obs) => {
-        const newObstacles = obs.map((o) => ({ ...o, x: o.x - 5 }));
-        if (newObstacles.length === 0 || newObstacles[newObstacles.length - 1].x < 300) {
-          const gapY = Math.random() * 200 + 50;
-          newObstacles.push({ x: 400, gapY });
+    // Обработка нажатий на клавишу
+    document.addEventListener("keydown", (event) => {
+        if (event.code === "Space") {
+            velocity = -8;
         }
-        return newObstacles.filter((o) => o.x > -50);
-      });
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [gameOver]);
-
-  useEffect(() => {
-    obstacles.forEach(({ x, gapY }) => {
-      if (x < 50 && x > 0 && (birdY < gapY - 50 || birdY > gapY + 50)) {
-        setGameOver(true);
-      }
     });
-  }, [obstacles, birdY]);
 
-  return (
-    <div className="relative w-[400px] h-[400px] bg-blue-300 overflow-hidden">
-      <div className="absolute left-10 w-10 h-10 bg-yellow-500 rounded-full" style={{ top: birdY }}></div>
-      {obstacles.map(({ x, gapY }, index) => (
-        <div key={index} className="absolute w-10 bg-green-600" style={{ left: x, height: gapY - 50, top: 0 }}></div>
-      ))}
-      {gameOver && <div className="absolute inset-0 flex items-center justify-center text-white text-2xl font-bold">Game Over</div>}
-    </div>
-  );
-}
+    function update() {
+        if (isGameOver) return;
+
+        // Обновление позиции птицы
+        velocity += gravity;
+        birdY += velocity;
+
+        // Проверка столкновений с краями экрана
+        if (birdY > canvas.height || birdY < 0) {
+            isGameOver = true;
+        }
+
+        // Генерация препятствий
+        if (frameCount % 90 === 0) {
+            let gapY = Math.random() * 200 + 50;
+            obstacles.push({ x: canvas.width, gapY: gapY });
+        }
+
+        // Движение и удаление старых препятствий
+        obstacles = obstacles.map(obs => ({ ...obs, x: obs.x - 3 })).filter(obs => obs.x > -50);
+
+        // Проверка столкновений с препятствиями
+        for (let obs of obstacles) {
+            if (obs.x < 50 && obs.x > 0) {
+                if (birdY < obs.gapY || birdY > obs.gapY + 100) {
+                    isGameOver = true;
+                }
+            }
+        }
+
+        frameCount++;
+        score++;
+    }
+
+    function draw() {
+        // Очистка экрана
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Отрисовка птицы
+        ctx.fillStyle = "red";
+        ctx.fillRect(50, birdY, 20, 20);
+
+        // Отрисовка препятствий
+        ctx.fillStyle = "green";
+        for (let obs of obstacles) {
+            ctx.fillRect(obs.x, 0, 50, obs.gapY);
+            ctx.fillRect(obs.x, obs.gapY + 100, 50, canvas.height - obs.gapY - 100);
+        }
+
+        // Отрисовка счета
+        ctx.fillStyle = "black";
+        ctx.font = "20px Arial";
+        ctx.fillText(`Score: ${score}`, 10, 20);
+
+        // Сообщение о проигрыше
+        if (isGameOver) {
+            ctx.fillStyle = "black";
+            ctx.font = "30px Arial";
+            ctx.fillText("Game Over!", canvas.width / 4, canvas.height / 2);
+        }
+    }
+
+    function gameLoop() {
+        update();
+        draw();
+        requestAnimationFrame(gameLoop);
+    }
+
+    gameLoop();
+});
