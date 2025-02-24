@@ -1,102 +1,104 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кликер монеты</title>
+    <title>Tap Coin Game</title>
     <style>
         body {
-            background-image: url('background.JPEG'); /* Установите свой фон */
-            background-size: cover;
-            background-position: center;
-            text-align: center;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            overflow: hidden;
-        }
-
-        .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
-        }
-
-        .coin {
-            width: 150px;
-            height: 150px;
-            background-image: url('coin.PNG'); /* Вставьте путь к монете */
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            transition: transform 0.1s ease-in-out;
-        }
-
-        .coin:active {
-            transform: scale(1.1);
-        }
-
-        .progress-bar-container {
-            width: 300px;
-            height: 20px;
-            background: #ddd;
-            border-radius: 10px;
-            margin-top: 20px;
+            background: url('background.JPEG') no-repeat center center/cover;
+            margin: 0;
             overflow: hidden;
         }
-
-        .progress-bar {
+        #coin {
+            width: 100px;
+            height: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s;
+        }
+        #progress-container {
+            width: 80%;
+            height: 30px;
+            border: 3px solid black;
+            background-color: white;
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+        }
+        #lock {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        #progress-bar {
             height: 100%;
             width: 0%;
-            background: gold;
+            background-color: green;
             transition: width 0.2s;
         }
-
-        .click-count {
-            margin-top: 10px;
-            font-size: 20px;
-            color: white;
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: yellow;
+            opacity: 1;
+            border-radius: 50%;
+            animation: fadeOut 0.5s ease-out forwards;
         }
-
-        .unlocked-message {
-            display: none;
-            font-size: 24px;
-            color: gold;
-            font-weight: bold;
-            margin-top: 20px;
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="coin" id="coin"></div>
-        <div class="progress-bar-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        <div class="click-count" id="click-count">Клики: 0 / 100</div>
-        <div class="unlocked-message" id="unlocked-message">Монета разблокирована!</div>
+    <img id="coin" src="coin.PNG" alt="Coin">
+    <div id="progress-container">
+        <img id="lock" src="lock.png" alt="Lock">
+        <div id="progress-bar"></div>
     </div>
 
     <script>
         let clickCount = 0;
-        const maxClicks = 100;
         const coin = document.getElementById("coin");
         const progressBar = document.getElementById("progress-bar");
-        const clickCountText = document.getElementById("click-count");
-        const unlockedMessage = document.getElementById("unlocked-message");
+        const lock = document.getElementById("lock");
 
-        coin.addEventListener("click", () => {
-            if (clickCount < maxClicks) {
-                clickCount++;
-                progressBar.style.width = (clickCount / maxClicks) * 100 + "%";
-                clickCountText.textContent = `Клики: ${clickCount} / 100`;
-
-                if (clickCount === maxClicks) {
-                    unlockedMessage.style.display = "block";
+        coin.addEventListener("click", (event) => {
+            clickCount++;
+            if (clickCount <= 100) {
+                progressBar.style.width = `${clickCount}%`;
+                if (clickCount === 100) {
+                    lock.src = "unlock.png";
                 }
             }
+            coin.style.transform = `translate(-50%, -50%) scale(1.1)`;
+            setTimeout(() => {
+                coin.style.transform = `translate(-50%, -50%) scale(1)`;
+            }, 100);
+            createSparkle(event.clientX, event.clientY);
         });
+
+        function createSparkle(x, y) {
+            for (let i = 0; i < 5; i++) {
+                const sparkle = document.createElement("div");
+                sparkle.classList.add("sparkle");
+                document.body.appendChild(sparkle);
+                sparkle.style.left = `${x + Math.random() * 20 - 10}px`;
+                sparkle.style.top = `${y + Math.random() * 20 - 10}px`;
+                setTimeout(() => sparkle.remove(), 500);
+            }
+        }
     </script>
 </body>
 </html>
