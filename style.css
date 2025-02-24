@@ -6,6 +6,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    touch-action: manipulation; /* Запрещает зум и перетаскивание */
 }
 
 body {
@@ -25,16 +26,15 @@ body {
 }
 
 #coin {
-    width: 180px; /* Увеличенная монета */
+    width: 200px; /* Увеличенная монета */
     height: auto;
     cursor: pointer;
-    transition: transform 0.1s ease;
     position: relative;
-    top: -30px; /* Смещение вверх */
+    top: -40px; /* Смещение вверх */
 }
 
 .progress-container {
-    width: 250px;
+    width: 200px;
     height: 30px;
     background-color: #333;
     border: 2px solid black;
@@ -58,7 +58,7 @@ body {
     height: 100%;
     background-color: green;
     width: 0%;
-    transition: width 0.3s ease-in-out;
+    transition: width 0.1s linear;
 }
 
 #counter {
@@ -70,10 +70,11 @@ body {
     z-index: 2;
 }
 
+/* Блестки */
 .sparkle {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     background-color: gold;
     border-radius: 50%;
     opacity: 0.8;
@@ -86,7 +87,7 @@ body {
         opacity: 1;
     }
     100% {
-        transform: translateY(-30px) scale(0.5);
+        transform: translateY(-20px) scale(0.5);
         opacity: 0;
     }
 }
