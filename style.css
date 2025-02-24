@@ -57,3 +57,7 @@ body {
     margin-left: 10px;
     font-weight: bold;
 }
+
+html, body {
+    touch-action: manipulation;
+}
