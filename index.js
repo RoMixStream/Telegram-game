@@ -74,3 +74,11 @@ document.addEventListener("mousedown", function(event) {
 document.addEventListener("touchstart", function(event) {
     event.preventDefault();
 });
+
+document.addEventListener("selectstart", function(event) {
+    event.preventDefault();
+});
+
+document.addEventListener("dragstart", function(event) {
+    event.preventDefault();
+});
