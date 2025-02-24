@@ -1,14 +1,23 @@
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
+    background: url('background.JPEG') no-repeat center center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: url('background.JPEG') no-repeat center center/cover;
-    margin: 0;
-    flex-direction: column;
+    overflow: hidden;
 }
 
-.game-container {
+.container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,59 +25,47 @@ body {
 }
 
 #coin {
-    width: 150px;
-    height: 150px;
+    width: 180px; /* Увеличенная монета */
+    height: auto;
     cursor: pointer;
-    transition: transform 0.05s;
+    transition: transform 0.1s ease;
+    position: relative;
+    top: -30px; /* Смещение вверх */
 }
 
 .progress-container {
+    width: 250px;
+    height: 30px;
+    background-color: #333;
+    border: 2px solid black;
+    position: relative;
     display: flex;
     align-items: center;
-    margin-top: 15px;
-    position: relative;
-}
-
-#lock-icon {
-    width: 25px;
-    height: 25px;
-    margin-right: 10px;
-}
-
-.progress-bar {
-    width: 150px;
-    height: 20px;
-    border: 2px solid black;
-    background-color: lightgray;
-    position: relative;
-    border-radius: 5px;
+    justify-content: flex-start;
+    margin-top: 10px;
+    border-radius: 15px;
     overflow: hidden;
 }
 
-#progress {
-    width: 0%;
+#lock {
+    width: 24px;
+    height: 24px;
+    margin-left: 5px;
+    z-index: 2;
+}
+
+#progress-bar {
     height: 100%;
     background-color: green;
-    transition: width 0.2s;
+    width: 0%;
+    transition: width 0.3s ease-in-out;
 }
 
 #counter {
-    font-size: 14px;
-    margin-left: 10px;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
     font-weight: bold;
-}
-
-html, body {
-    touch-action: manipulation;
-}
-
-* {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-}
-
-img {
-    pointer-events: none;
+    z-index: 2;
 }
