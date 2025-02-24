@@ -1,26 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flying Bird Game</title>
-    <script defer src="./index.js"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: skyblue;
-            margin: 0;
-            overflow: hidden;
-        }
-        canvas {
-            background-color: white;
-        }
-    </style>
+    <title>Tap Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <canvas id="gameCanvas"></canvas>
+    <div id="game-container">
+        <h1>Tap to Collect</h1>
+        <p id="counter">Taps: 0</p>
+        <progress id="progress-bar" value="0" max="100"></progress>
+        <img id="coin" src="coin.png" alt="Coin">
+        <p id="unlock-message" class="hidden">🎉 Coin Unlocked! 🎉</p>
+    </div>
+
+    <audio id="bg-music" src="background.mp3" loop></audio>
+
+    <script src="script.js"></script>
 </body>
 </html>
