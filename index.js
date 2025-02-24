@@ -103,7 +103,7 @@ function restartGame() {
     obstacles = [];
     frameCount = 0;
     score = 0;
-    loop();
+    gameloop();
 }
 
 // Добавляем обработчик клика для рестарта
